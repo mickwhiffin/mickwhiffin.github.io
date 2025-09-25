@@ -544,10 +544,15 @@
                     Be among the first Canadian software companies to streamline your SR&ED claims
                 </p>
                 
-                <div class="email-signup">
-                    <input type="email" class="email-input" placeholder="Enter your email address" id="emailInput">
-                    <button class="signup-button" onclick="signUp()">Join Beta Program</button>
-                </div>
+                <form class="email-signup" id="signupForm" action="https://formspree.io/f/xyzaabcd" method="POST">
+                    <input type="email" class="email-input" placeholder="Enter your email address" name="email" required>
+                    <input type="text" name="_gotcha" style="display:none"> <!-- honeypot -->
+                    <input type="hidden" name="_subject" value="Sredify Beta Signup">
+                    <button class="signup-button" type="submit">Join Beta Program</button>
+                </form>
+
+                <p id="signupMsg" style="margin-top:1rem; opacity:.9;"></p>
+
                 
                 <p style="margin-top: 1rem; opacity: 0.9;">
                     No spam. Just updates on launch and exclusive beta access.
@@ -563,6 +568,7 @@
     </footer>
 
     <script>
+        /*
         function signUp() {
             const email = document.getElementById('emailInput').value;
             if (email && email.includes('@')) {
@@ -572,6 +578,7 @@
                 alert('Please enter a valid email address.');
             }
         }
+        */
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -596,6 +603,33 @@
                 header.style.background = 'rgba(255, 255, 255, 0.95)';
             }
         });
+
+
+        const form = document.getElementById('signupForm');
+        const msg = document.getElementById('signupMsg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = new FormData(form);
+
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (res.ok) {
+                    msg.textContent = "Thanks! We’ll be in touch with beta access details.";
+                    form.reset();
+                } else {
+                    msg.textContent = "Hmm, something went wrong. Please try again or email us directly.";
+                }
+            } catch (err) {
+                msg.textContent = "Network error. Please try again shortly.";
+            }
+        });
+
     </script>
 </body>
 </html>
